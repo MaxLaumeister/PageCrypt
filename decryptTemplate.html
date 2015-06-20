@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Password Protected Page</title>
+  </head>
+  <body>
+    <h1>This document is password protected</h1>
+    Password: <input id="pass" type="password" name="pass"><br>
+    <button id="submitPass" type="button">Submit</button>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/pbkdf2.js"></script>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+    <script src="FileSaver.js"></script>
+    <script>
+        var pl = {{ENCRYPTED_PAYLOAD}};
+        
+        var submitPass = document.getElementById('submitPass');
+        var passEl = document.getElementById('pass');
+        
+        function doSubmit(evt) {
+            try {
+                var decrypted = decryptFile(CryptoJS.enc.Base64.parse(pl.data), passEl.value, CryptoJS.enc.Base64.parse(pl.salt), CryptoJS.enc.Base64.parse(pl.iv));
+                document.write(decrypted);
+            } catch (e) {
+                alert("Invalid password, try again");
+                return;
+            }
+            
+            
+        }
+        
+        submitPass.onclick = doSubmit;
+        
+        function decryptFile(contents, password, salt, iv) {
+            var _cp = CryptoJS.lib.CipherParams.create({
+                ciphertext: contents
+            });
+            var key = CryptoJS.PBKDF2(password, salt, { keySize: 256/32, iterations: 50 });
+            var decrypted = CryptoJS.AES.decrypt(_cp, key, {iv: iv});
+            
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        }
+        
+    </script>
+  </body>
+</html>

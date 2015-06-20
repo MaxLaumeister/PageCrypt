@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Password Protected Page</title>
+  </head>
+  <body>
+    <input type="file" id="fileselect" name="file" /><br>
+    Password: <input id="pass" type="password" name="pass"><br>
+    Confirm Password: <input id="passconf" type="password" name="passconf"><br>
+    <button id="submitFile" type="button" disabled>Submit</button>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/pbkdf2.js"></script>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
+    <script src="FileSaver.js"></script>
+    <script>
+        var fileSelect = document.getElementById('fileselect');
+        var submitFile = document.getElementById('submitFile');
+        var passEl = document.getElementById('pass');
+        var passConfEl = document.getElementById('passconf');
+        
+        var templateHTML;
+        
+        function doSubmit(evt) {
+            var file = fileSelect.files[0];
+            var reader = new FileReader();
+            reader.onload = function(data) {
+                var fileConts = data.target.result;
+                
+                if (passEl.value !== passConfEl.value) {
+                    alert("Passwords do not match.");
+                    return;
+                }
+                
+                var encryptedFile = encryptFile(fileConts, passEl.value);
+                
+                var salt = CryptoJS.enc.Base64.stringify(encryptedFile.salt);
+                var iv = CryptoJS.enc.Base64.stringify(encryptedFile.iv);
+                var cipherText = CryptoJS.enc.Base64.stringify(encryptedFile.data.ciphertext);
+                var encryptedJSON = JSON.stringify({salt: salt, iv: iv, data: cipherText});
+                
+                console.log(fileConts);
+                console.log(encryptedJSON);
+                
+                // Wrap template around encrypted data
+                
+                var encryptedDocument = templateHTML.replace("{{ENCRYPTED_PAYLOAD}}", encryptedJSON);
+                var fileBlob = new Blob([encryptedDocument], {type: "text/plain;charset=utf-8"});
+                saveAs(fileBlob, "output.html");
+                
+            };
+            reader.readAsText(file);
+        }
+        
+        submitFile.onclick = doSubmit;
+        
+        function encryptFile(contents, password) {
+            var salt = CryptoJS.lib.WordArray.random(256/8);
+            var iv = CryptoJS.lib.WordArray.random(128/8);
+            var key = CryptoJS.PBKDF2(password, salt, { keySize: 256/32, iterations: 50 });
+            console.log("key", key);
+            var encrypted = CryptoJS.AES.encrypt(contents, key, {iv: iv});
+            return {salt: salt, iv: iv, data: encrypted};
+        }
+        
+        // Load template
+        
+        var xmlhttp = new XMLHttpRequest();
+                
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+                       if(xmlhttp.status == 200){
+                           templateHTML = xmlhttp.responseText;
+                           submitFile.disabled = false;
+                       }
+                       else {
+                           console.log("Template not found.");
+                       }
+                    }
+                }
+
+                xmlhttp.open("GET", "decryptTemplate.html", true);
+                xmlhttp.send();
+        
+    </script>
+  </body>
+</html>
