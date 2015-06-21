@@ -122,11 +122,6 @@
             reader.onload = function(data) {
                 var fileConts = data.target.result;
                 
-                if (passEl.value !== passConfEl.value) {
-                    alert("Passwords do not match.");
-                    return;
-                }
-                
                 var encryptedFile = encryptFile(fileConts, passEl.value);
                 
                 var salt = CryptoJS.enc.Base64.stringify(encryptedFile.salt);
@@ -134,14 +129,20 @@
                 var cipherText = CryptoJS.enc.Base64.stringify(encryptedFile.data.ciphertext);
                 var encryptedJSON = JSON.stringify({salt: salt, iv: iv, data: cipherText});
                 
-                console.log(fileConts);
-                console.log(encryptedJSON);
-                
                 // Wrap template around encrypted data
                 
                 var encryptedDocument = templateHTML.replace("/*{{ENCRYPTED_PAYLOAD}}*/\"\"", encryptedJSON);
                 var fileBlob = new Blob([encryptedDocument], {type: "text/plain;charset=utf-8"});
-                saveAs(fileBlob, "output.html");
+                
+                // Create filename
+                var origPath = document.getElementById('fileselect').value;
+                var pathSplit = origPath.split("\\");
+                var origName = pathSplit[pathSplit.length - 1];
+                var origNameSplit = origName.split(".");
+                origNameSplit[origNameSplit.length - 2] += "-protected";
+                var finalName = origNameSplit.join(".");
+                
+                saveAs(fileBlob, finalName);
                 doneProtecting.style.visibility = "visible";
             };
             reader.readAsText(file);
@@ -153,7 +154,6 @@
             var salt = CryptoJS.lib.WordArray.random(256/8);
             var iv = CryptoJS.lib.WordArray.random(128/8);
             var key = CryptoJS.PBKDF2(password, salt, { keySize: 256/32, iterations: 100 });
-            console.log("key", key);
             var encrypted = CryptoJS.AES.encrypt(contents, key, {iv: iv});
             return {salt: salt, iv: iv, data: encrypted};
         }
