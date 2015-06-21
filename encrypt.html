@@ -43,7 +43,7 @@
                 
                 // Wrap template around encrypted data
                 
-                var encryptedDocument = templateHTML.replace("{{ENCRYPTED_PAYLOAD}}", encryptedJSON);
+                var encryptedDocument = templateHTML.replace("/*{{ENCRYPTED_PAYLOAD}}*/\"\"", encryptedJSON);
                 var fileBlob = new Blob([encryptedDocument], {type: "text/plain;charset=utf-8"});
                 saveAs(fileBlob, "output.html");
                 
