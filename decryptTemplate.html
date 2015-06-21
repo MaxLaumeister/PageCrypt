@@ -59,10 +59,6 @@
             line-height: 30px;
         }
         
-        #passwordPrompt {
-            
-        }
-        
         #submitPass {
             font-size: 20px;
             border-radius: 5px;
@@ -103,6 +99,7 @@
         function doSubmit(evt) {
             try {
                 var decrypted = decryptFile(CryptoJS.enc.Base64.parse(pl.data), passEl.value, CryptoJS.enc.Base64.parse(pl.salt), CryptoJS.enc.Base64.parse(pl.iv));
+                if (decrypted === "") throw "No data returned";
                 document.write(decrypted);
             } catch (e) {
                 invalidPassEl.style.display = "block";
