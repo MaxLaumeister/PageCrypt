@@ -63,7 +63,7 @@
                 <h1>Client-Side HTML Password Protect</h1>
                 <p>This tool lets you securely password-protect an HTML file. Unlike other password-protection tools, this tool:</p>
                 <ol>
-                    <li>Has no server-side components (this tool and its password-protected pages entirely in javascript).</li>
+                    <li>Has no server-side components (this tool and its password-protected pages run entirely in javascript).</li>
                     <li>Uses strong encryption, so the password-protection cannot be bypassed.</li>
                 </ol>
                 <p>All you need to do is choose an HTML file and a password, and your page will be password-protected.</p>
@@ -92,7 +92,7 @@
                 <h3>How can this be secure if it's client-side? Can't people just bypass the password?</h3>
                 <p>The HTML gets encrypted using the password, so it is unreadable without the password. An attacker could extract the original document, but it would be an unusable mess until they decrypt it, which can only be done with the original password.</p>
                 <h3>How do I know you're not keeping track of passwords I enter into this tool?</h3>
-                <p>View the source code for this tool (in your browser and/or <a href="#">on GitHub</a>) and you can see for yourself that the password never leaves your computer!<p>
+                <p>View the source code for this tool (in your browser and/or <a href="https://github.com/MaxLaumeister/clientside-html-password">on GitHub</a>) and you can see for yourself that the password never leaves your computer!<p>
                 <h3>Why would I want to use this instead of a .htaccess user/password prompt?</h3>
                 <p>Standard user/password prompts require you have some sort of privileged access to the server. With Apache for instance, you need to be able to add a .htaccess file to the directory you want to protect. Since this tool produces a standard HTML file, you can host it literally anywhere, even places that don't give you access to the server configuration (<a href="http://www.dropboxwiki.com/tips-and-tricks/host-websites-with-dropbox">like Dropbox!</a>)
                 <h3>Does this encrypt all the CSS/Javascript/Images or only the HTML itself?</h3>
@@ -103,7 +103,7 @@
             <hr>
             <div id="moreInfo">
                 <h2>More Info</h2>
-                <p>Project by <a href="http://www.maxlaumeister.com/">Maximillian Laumeister</a>. The source code and license are available <a href="#">on GitHub</a>.
+                <p>Project by <a href="http://www.maxlaumeister.com/">Maximillian Laumeister</a>. The source code and license are available <a href="https://github.com/MaxLaumeister/clientside-html-password">on GitHub</a>.
             </div>
         </div>
         <div id="disclaimer">
