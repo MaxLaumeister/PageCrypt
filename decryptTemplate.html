@@ -8,7 +8,6 @@
             margin: 0;
             width: 100%;
             height: 100%;
-            background-color: #EEEEEE;
             font-family: Arial, Helvetica, sans-serif;
         }
         #dialogText {
@@ -24,6 +23,7 @@
             width: 100%;
             height: 100%;
             display: table;
+            background-color: #EEEEEE;
         }
         
         #dialogWrapCell {
@@ -56,12 +56,22 @@
             font-size: 30px;
         }
         
-        #invalidPass {
-            color: red;
-            display: none;
+        #messageWrapper {
             float: left;
             vertical-align: middle;
             line-height: 30px;
+        }
+        
+        .notifyText {
+            display: none;
+        }
+        
+        #invalidPass {
+            color: red;
+        }
+        
+        #success {
+            color: green;
         }
         
         #submitPass {
@@ -90,7 +100,11 @@
                     <p id="passwordPrompt">Password</p>
                     <input id="pass" type="password" name="pass">
                     <div>
-                        <span id="invalidPass">Invalid password, please try again.</span>
+                        <span id="messageWrapper">
+                            <span id="invalidPass" class="notifyText">Sorry, please try again.</span>
+                            <span id="success" class="notifyText">Success!</span>
+                            &nbsp;
+                        </span>
                         <button id="submitPass" type="button">Submit</button>
                         <div style="clear: both;"></div>
                     </div>
@@ -180,16 +194,28 @@
         var submitPass = document.getElementById('submitPass');
         var passEl = document.getElementById('pass');
         var invalidPassEl = document.getElementById('invalidPass');
+        var successEl = document.getElementById('success');
         var contentFrame = document.getElementById('contentFrame');
+        
+        if (pl === "") {
+            submitPass.disabled = true;
+            passEl.disabled = true;
+            alert("This page is meant to be used with the encryption tool. It doesn't work standalone.");
+        }
         
         function doSubmit(evt) {
             try {
                 var decrypted = decryptFile(CryptoJS.enc.Base64.parse(pl.data), passEl.value, CryptoJS.enc.Base64.parse(pl.salt), CryptoJS.enc.Base64.parse(pl.iv));
                 if (decrypted === "") throw "No data returned";
                 srcDoc.set(contentFrame, decrypted);
-                dialogWrap.style.display = "none";
+                successEl.style.display = "inline";
+                passEl.disabled = true;
+                submitPass.disabled = true;
+                setTimeout(function() {
+                    dialogWrap.style.display = "none";
+                }, 1000);
             } catch (e) {
-                invalidPassEl.style.display = "block";
+                invalidPassEl.style.display = "inline";
                 passEl.value = "";
             }
         }
