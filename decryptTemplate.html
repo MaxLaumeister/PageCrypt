@@ -6,6 +6,7 @@
     <style>
         html, body {
             margin: 0;
+            width: 100%;
             height: 100%;
             background-color: #EEEEEE;
             font-family: Arial, Helvetica, sans-serif;
@@ -17,6 +18,9 @@
         }
         
         #dialogWrap {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             display: table;
@@ -67,9 +71,17 @@
             border: solid gray 1px;
             float: right;
         }
+        #contentFrame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
   </head>
   <body>
+    <iframe id="contentFrame" frameBorder="0"></iframe>
     <div id="dialogWrap">
         <div id="dialogWrapCell">
             <div id="mainDialog">
@@ -86,22 +98,96 @@
             </div>
         </div>
     </div>
-    
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/pbkdf2.js"></script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/aes.js"></script>
-    <script src="FileSaver.js"></script>
+    <script>
+        /*! srcdoc-polyfill - v0.1.1 - 2013-03-01
+        * http://github.com/jugglinmike/srcdoc-polyfill/
+        * Copyright (c) 2013 Mike Pennisi; Licensed MIT */
+        (function( window, document, undefined ) {
+	
+	        var idx, iframes;
+	        var _srcDoc = window.srcDoc;
+	        var isCompliant = !!("srcdoc" in document.createElement("iframe"));
+	        var implementations = {
+		        compliant: function( iframe, content ) {
+
+			        if (content) {
+				        iframe.setAttribute("srcdoc", content);
+			        }
+		        },
+		        legacy: function( iframe, content ) {
+
+			        var jsUrl;
+
+			        if (!iframe || !iframe.getAttribute) {
+				        return;
+			        }
+
+			        if (!content) {
+				        content = iframe.getAttribute("srcdoc");
+			        } else {
+				        iframe.setAttribute("srcdoc", content);
+			        }
+
+			        if (content) {
+				        // The value returned by a script-targeted URL will be used as
+				        // the iFrame's content. Create such a URL which returns the
+				        // iFrame element's `srcdoc` attribute.
+				        jsUrl = "javascript: window.frameElement.getAttribute('srcdoc');";
+
+				        iframe.setAttribute("src", jsUrl);
+
+				        // Explicitly set the iFrame's window.location for
+				        // compatability with IE9, which does not react to changes in
+				        // the `src` attribute when it is a `javascript:` URL, for
+				        // some reason
+				        if (iframe.contentWindow) {
+					        iframe.contentWindow.location = jsUrl;
+				        }
+			        }
+		        }
+	        };
+	        var srcDoc = window.srcDoc = {
+		        // Assume the best
+		        set: implementations.compliant,
+		        noConflict: function() {
+			        window.srcDoc = _srcDoc;
+			        return srcDoc;
+		        }
+	        };
+
+	        // If the browser supports srcdoc, no shimming is necessary
+	        if (isCompliant) {
+		        return;
+	        }
+
+	        srcDoc.set = implementations.legacy;
+
+	        // Automatically shim any iframes already present in the document
+	        iframes = document.getElementsByTagName("iframe");
+	        idx = iframes.length;
+
+	        while (idx--) {
+		        srcDoc.set( iframes[idx] );
+	        }
+
+        }( this, this.document ));
+    </script>
     <script>
         var pl = /*{{ENCRYPTED_PAYLOAD}}*/"";
         
         var submitPass = document.getElementById('submitPass');
         var passEl = document.getElementById('pass');
         var invalidPassEl = document.getElementById('invalidPass');
+        var contentFrame = document.getElementById('contentFrame');
         
         function doSubmit(evt) {
             try {
                 var decrypted = decryptFile(CryptoJS.enc.Base64.parse(pl.data), passEl.value, CryptoJS.enc.Base64.parse(pl.salt), CryptoJS.enc.Base64.parse(pl.iv));
                 if (decrypted === "") throw "No data returned";
-                document.write(decrypted);
+                srcDoc.set(contentFrame, decrypted);
+                dialogWrap.style.display = "none";
             } catch (e) {
                 invalidPassEl.style.display = "block";
                 passEl.value = "";
@@ -129,7 +215,6 @@
             
             return decrypted.toString(CryptoJS.enc.Utf8);
         }
-        
     </script>
   </body>
 </html>
