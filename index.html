@@ -2,31 +2,31 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=1150, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Client-Side HTML Password Protect</title>
     <style>
         html, body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
+			line-height: 1.4;
         }
         #pageContainer {
-            width: 1050px;
             margin: 0 auto;
             padding: 50px;
+			max-width: 1050px;
         }
         #mainContainer {
             padding: 0 25px 25px 25px;
             border: solid #CCC 1px;
         }
-        #widgetContainer {
-            float: right;
-            width: 350px;
-            padding: 25px;
-        }
-        #projDescription {
-            float: left;
-            width: 550px;
-        }
+		#sectionTop {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+		}
+		#projDescription {
+			max-width: 700px;
+		}
         .steps {
             color: green;
         }
@@ -60,32 +60,35 @@
   <body>
     <div id="pageContainer">
         <div id="mainContainer">
-            <div id="projDescription">
-                <h1>Client-Side HTML Password Protect</h1>
-                <p>This tool lets you securely password-protect an HTML file. Unlike other password-protection tools, this tool:</p>
-                <ol>
-                    <li>Has no server-side components (this tool and its password-protected pages run entirely in javascript).</li>
-                    <li>Uses strong encryption, so the password-protection cannot be bypassed.</li>
-                </ol>
-                <p>All you need to do is choose an HTML file and a password, and your page will be password-protected.</p>
-                <p><a href="demopage/" class="demoButton">Live Demo</a>&nbsp;&nbsp;(pssst... the live demo password is "hunter2")</p>
-            
-            </div>
-            <div id="widgetContainer">
-                <p class="steps">Step 1. Choose HTML file</p><p><input type="file" id="fileselect" name="file" disabled/></p>
-                <p><span class="steps">Step 2. Choose password</span>
-                <div style="display: table;">
-                    <div style="display: table-row;">
-                        <div style="display: table-cell;">Password:</div><div style="display: table-cell;"><input id="pass" type="password" name="pass" disabled></div>
-                    </div>
-                    <div style="display: table-row;">
-                        <div style="display: table-cell;">Confirm:</div><div style="display: table-cell;"><input id="passconf" type="password" name="passconf" disabled></div>
-                    </div>
-                </div>
-                <p id="passMismatch">Passwords don't match, try again.</p>
-                <p class="steps">Step 3. Protect!</p><p><button id="submitFile" type="button" disabled>Submit</button></p>
-                <p id="doneProtecting">Done! Check your downloads!</p>
-            </div>
+		    <div id="sectionTop">
+				<div id="projDescription">
+					<h1>Client-Side HTML Password Protect</h1>
+					<p>This tool lets you securely password-protect an HTML file. Unlike other password-protection tools, this tool:</p>
+					<ol>
+						<li>Has no server-side components (this tool and its password-protected pages run entirely in javascript).</li>
+						<li>Uses strong encryption, so the password-protection cannot be bypassed.</li>
+					</ol>
+					<p>All you need to do is choose an HTML file and a password, and your page will be password-protected.</p>
+					<p><a href="demopage/" class="demoButton">Live Demo</a>&nbsp;&nbsp;(pssst... the live demo password is "hunter2")</p>
+				
+				</div>
+				<div id="widgetContainer">
+					<h2>Instructions</h2>
+					<p class="steps">Step 1. Choose HTML file</p><p><input type="file" id="fileselect" name="file" disabled/></p>
+					<p><span class="steps">Step 2. Choose password</span>
+					<div style="display: table;">
+						<div style="display: table-row;">
+							<div style="display: table-cell;">Password:</div><div style="display: table-cell;"><input id="pass" type="password" name="pass" disabled></div>
+						</div>
+						<div style="display: table-row;">
+							<div style="display: table-cell;">Confirm:</div><div style="display: table-cell;"><input id="passconf" type="password" name="passconf" disabled></div>
+						</div>
+					</div>
+					<p id="passMismatch">Passwords don't match, try again.</p>
+					<p class="steps">Step 3. Protect!</p><p><button id="submitFile" type="button" disabled>Submit</button></p>
+					<p id="doneProtecting">Done! Check your downloads!</p>
+				</div>
+			</div>
             <div style="clear: both;"></div>
             <hr>
             <div id="faq">
@@ -95,7 +98,7 @@
                 <h3>How do I know you're not keeping track of passwords I enter into this tool?</h3>
                 <p>View the source code for this tool (in your browser and/or <a href="https://github.com/MaxLaumeister/clientside-html-password">on GitHub</a>) and you can see for yourself that the password never leaves your computer!<p>
                 <h3>Why would I want to use this instead of a .htaccess user/password prompt?</h3>
-                <p>Standard user/password prompts require you have some sort of privileged access to the server. With Apache for instance, you need to be able to add a .htaccess file to the directory you want to protect. Since this tool produces a standard HTML file, you can host it literally anywhere, even places that don't give you access to the server configuration (<a href="http://www.dropboxwiki.com/tips-and-tricks/host-websites-with-dropbox">like Dropbox!</a>)
+                <p>Standard user/password prompts require you have some sort of privileged access to the server. With Apache for instance, you need to be able to add a .htaccess file to the directory you want to protect. Since this tool produces a standard HTML file, you can host it literally anywhere, even places that don't give you access to the server configuration.
                 <h3>Does this encrypt all the CSS/Javascript/Images or only the HTML itself?</h3>
                 <p>This tool only encrypts the HTML document itself. If you inline your CSS/JS, or if you <a href="http://www.abeautifulsite.net/convert-an-image-to-a-data-uri-with-your-browser/" target="_blank">convert your images to data uris</a>, then they will be encrypted too. Otherwise they will just be linked. Since the HTML itself is encrypted though, a visitor without the password will not be able see the URLs of any of the linked resources.</p>
                 <h3>What sort of crypto do you use?</h3>
