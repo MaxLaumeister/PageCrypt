@@ -8,25 +8,25 @@
         html, body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-			line-height: 1.4;
+            line-height: 1.4;
         }
         #pageContainer {
             margin: 0 auto;
-            padding: 50px;
-			max-width: 1050px;
+            padding: 10px;
+            max-width: 1050px;
         }
         #mainContainer {
             padding: 0 25px 25px 25px;
             border: solid #CCC 1px;
         }
-		#sectionTop {
-			display: flex;
-			flex-wrap: wrap;
-			justify-content: space-between;
-		}
-		#projDescription {
-			max-width: 700px;
-		}
+        #sectionTop {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        #projDescription {
+            max-width: 700px;
+        }
         .steps {
             color: green;
         }
@@ -55,40 +55,45 @@
             font-size: 0.75em;
             margin-top: 30px;
         }
+        @media (min-width: 700px) {
+            #pageContainer {
+                padding: 50px;
+            }
+        }
     </style>
   </head>
   <body>
     <div id="pageContainer">
         <div id="mainContainer">
-		    <div id="sectionTop">
-				<div id="projDescription">
-					<h1>Client-Side HTML Password Protect</h1>
-					<p>This tool lets you securely password-protect an HTML file. Unlike other password-protection tools, this tool:</p>
-					<ol>
-						<li>Has no server-side components (this tool and its password-protected pages run entirely in javascript).</li>
-						<li>Uses strong encryption, so the password-protection cannot be bypassed.</li>
-					</ol>
-					<p>All you need to do is choose an HTML file and a password, and your page will be password-protected.</p>
-					<p><a href="demopage/" class="demoButton">Live Demo</a>&nbsp;&nbsp;(pssst... the live demo password is "hunter2")</p>
-				
-				</div>
-				<div id="widgetContainer">
-					<h2>Instructions</h2>
-					<p class="steps">Step 1. Choose HTML file</p><p><input type="file" id="fileselect" name="file" disabled/></p>
-					<p><span class="steps">Step 2. Choose password</span>
-					<div style="display: table;">
-						<div style="display: table-row;">
-							<div style="display: table-cell;">Password:</div><div style="display: table-cell;"><input id="pass" type="password" name="pass" disabled></div>
-						</div>
-						<div style="display: table-row;">
-							<div style="display: table-cell;">Confirm:</div><div style="display: table-cell;"><input id="passconf" type="password" name="passconf" disabled></div>
-						</div>
-					</div>
-					<p id="passMismatch">Passwords don't match, try again.</p>
-					<p class="steps">Step 3. Protect!</p><p><button id="submitFile" type="button" disabled>Submit</button></p>
-					<p id="doneProtecting">Done! Check your downloads!</p>
-				</div>
-			</div>
+            <div id="sectionTop">
+                <div id="projDescription">
+                    <h1>Client-Side HTML Password Protect</h1>
+                    <p>This tool lets you securely password-protect an HTML file. Unlike other password-protection tools, this tool:</p>
+                    <ol>
+                        <li>Has no server-side components (this tool and its password-protected pages run entirely in javascript).</li>
+                        <li>Uses strong encryption, so the password-protection cannot be bypassed.</li>
+                    </ol>
+                    <p>All you need to do is choose an HTML file and a password, and your page will be password-protected.</p>
+                    <p><a href="demopage/" class="demoButton">Live Demo</a>&nbsp;&nbsp;(pssst... the live demo password is "hunter2")</p>
+                
+                </div>
+                <div id="widgetContainer">
+                    <h2>Instructions</h2>
+                    <p class="steps">Step 1. Choose HTML file</p><p><input type="file" id="fileselect" name="file" disabled/></p>
+                    <p><span class="steps">Step 2. Choose password</span>
+                    <div style="display: table;">
+                        <div style="display: table-row;">
+                            <div style="display: table-cell;">Password:</div><div style="display: table-cell;"><input id="pass" type="password" name="pass" disabled></div>
+                        </div>
+                        <div style="display: table-row;">
+                            <div style="display: table-cell;">Confirm:</div><div style="display: table-cell;"><input id="passconf" type="password" name="passconf" disabled></div>
+                        </div>
+                    </div>
+                    <p id="passMismatch">Passwords don't match, try again.</p>
+                    <p class="steps">Step 3. Protect!</p><p><button id="submitFile" type="button" disabled>Submit</button></p>
+                    <p id="doneProtecting">Done! Check your downloads!</p>
+                </div>
+            </div>
             <div style="clear: both;"></div>
             <hr>
             <div id="faq">
