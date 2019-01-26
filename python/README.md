@@ -1,5 +1,5 @@
 ## Command Line Interface with Python ##
-This tool securely password-protect HTML files from command line using Python3.
+This tool securely password-protects HTML files from the command line using Python3.
 
 ### Usage ###
 Run: `python3 encrypt.py filename [passphrase]`  
