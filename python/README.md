@@ -9,5 +9,5 @@ no passphrase provided at start, the script will ask for it while running.
 
 ### Dependencies ###
 1) Python3
-2) [pycrypto](https://pypi.org/project/pycrypto/) for AES: `pip install pycrypto`
-3) Python version of [pbkdf2](https://pypi.org/project/pbkdf2/): `pip install pbkdf2`
+2) [pycrypto](https://pypi.org/project/pycrypto/) for AES: `pip3 install pycrypto`
+3) Python version of [pbkdf2](https://pypi.org/project/pbkdf2/): `pip3 install pbkdf2`
