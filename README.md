@@ -1,4 +1,4 @@
-## Client Side HTML Password Protection Tool ##
+## PageCrypt ##
 
 ### Overview ###
 
@@ -8,4 +8,4 @@ This tool lets you securely password-protect an HTML file. Unlike other password
 
 2. Uses strong encryption, so the password-protection cannot be bypassed.
 
-For details and to use the tool, please see the [Project Page](http://code.maxlaumeister.com/clientside-html-password/).
+For details and to use the tool, please see the [Project Page](http://code.maxlaumeister.com/pagecrypt/).
