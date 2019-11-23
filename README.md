@@ -1,4 +1,4 @@
-## PageCrypt ##
+## PageCrypt - Password Protect HTML ##
 
 ### Overview ###
 
