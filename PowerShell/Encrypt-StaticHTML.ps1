@@ -1,6 +1,6 @@
 #### PowerShell PageCrypt Encryptor
 ## v1.0 - 26/11/2019
-## Nial Francis
+## Nial Francis - https://nialfrancis.tech/
 
 [cmdletbinding()]
 Param(
@@ -15,7 +15,7 @@ Param(
 
 #### FUNCTIONS
 
-function Encrpyt-StaticHTMLData ($sec,$data) {
+function Encrypt-StaticHTMLData ($sec,$data) {
 	$ibytes = [System.Text.Encoding]::UTF8.GetBytes($data)
 	Write-Verbose $ibytes.Length
 	if ( $ibytes.Length % 16 -eq 0 ) { $ibytes = $ibytes + 0 }
@@ -67,7 +67,7 @@ if ($File) {
 }
 
 $sec = GenerateKey
-$encbytes = Encrpyt-StaticHTMLData $sec $data
+$encbytes = Encrypt-StaticHTMLData $sec $data
 $json = @{
 	data = [System.Convert]::ToBase64String($encbytes)
 	iv = [System.Convert]::ToBase64String($sec.iv)
