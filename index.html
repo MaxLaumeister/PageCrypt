@@ -6,6 +6,18 @@
     <link rel="canonical" href="https://www.maxlaumeister.com/pagecrypt/" />
     <title>PageCrypt - Password Protect HTML</title>
     <meta name="description" content="This tool lets you securely password-protect an HTML file without using .htaccess. It uses strong encryption, so the password-protection cannot be bypassed. Choose an HTML file and a password, and your page will be password-protected!">
+    <script>
+      // If there is no trailing slash after the path in the url, add it
+      // Workaround for Netlify trailing-slash rewrite issue
+      // https://community.netlify.com/t/bug-in-non-trailing-slash-rewrite/452/23
+      if (!window.location.pathname.endsWith('/') && !window.location.pathname.split("/").pop().includes(".")) {
+          var url = window.location.protocol + '//' +
+                  window.location.host +
+                  window.location.pathname + '/' +
+                  window.location.search;
+          window.history.replaceState(null, document.title, url);
+      }
+    </script>
     <style>
         html, body {
             margin: 0;
