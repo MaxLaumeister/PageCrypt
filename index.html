@@ -73,6 +73,7 @@
             color: red;
         }
         .demoButton {
+          display: inline-block;
           font: bold 20px Arial;
           text-decoration: none;
           background-color: #EEEEEE;
@@ -84,7 +85,7 @@
           border-left: 1px solid #CCCCCC;
         }
         #doneProtecting {
-            visibility: hidden;
+            display: none;
             color: blue;
             font-weight: bold;
         }
@@ -100,6 +101,9 @@
         }
         .githubLogo:hover {
             opacity: 1;
+        }
+        .suggested {
+            max-width: 260px;
         }
         @media (min-width: 700px) {
             #pageContainer {
@@ -136,7 +140,6 @@
                     </ol>
                     <p>All you need to do is choose an HTML file and a password, and your page will be password-protected.</p>
                     <p><a href="demopage/" class="demoButton">Live Demo</a>&nbsp;&nbsp;(pssst... the live demo password is "hunter2")</p>
-                
                 </div>
                 <div id="widgetContainer">
                     <h2>Instructions</h2>
@@ -153,6 +156,8 @@
                     <p id="passMismatch">Passwords don't match, try again.</p>
                     <p class="steps">Step 3. Protect!</p><p><button id="submitFile" type="button" disabled>Submit</button></p>
                     <p id="doneProtecting">Done! Check your downloads!</p>
+                    <p class="steps">Step 4. Tip me?</p><p><a href="https://www.maxlaumeister.com/tip/" class="demoButton">💳 Donate</a></p>
+                    <p class="suggested">Suggested donation is <a href="https://www.maxlaumeister.com/tip/">$10 for businesses</a>. Any amount helps!</p>
                 </div>
             </div>
             <div style="clear: both;"></div>
@@ -230,7 +235,7 @@
                 var finalName = origNameSplit.join(".");
                 
                 saveAs(fileBlob, finalName);
-                doneProtecting.style.visibility = "visible";
+                doneProtecting.style.display = "block";
             };
             reader.readAsText(file);
         }
@@ -270,7 +275,7 @@
             passEl.disabled = false;
             passConfEl.disabled = false;
             submitFile.disabled = false;
-            doneProtecting.style.visibility = "hidden";
+            doneProtecting.style.display = "none";
         }
         
         function passwordsMatch() {
