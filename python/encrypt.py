@@ -46,7 +46,7 @@ def main():
 	# workaround for padding issue https://github.com/dlitz/pycrypto/issues/277
 	for i in range(16):
 		try:
-			encrypted = cipher.encrypt(padded)
+			encrypted = cipher.encrypt(padded.encode("utf8"))
 			break
 		except ValueError:
 			padded += chr(0)
