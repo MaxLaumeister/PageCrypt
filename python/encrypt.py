@@ -3,13 +3,13 @@
 try:
 	from pbkdf2 import PBKDF2
 except:
-	print("install pbkdf2: \"pip install pbkdf2\"")
+	print("install pbkdf2: \"pip3 install pbkdf2\"")
 	exit(1)
 try:
 	from Crypto import Random
 	from Crypto.Cipher import AES
 except:
-	print("install pycrypto: \"pip install pycrypto\"")
+	print("install pycrypto: \"pip3 install pycrypto\"")
 	exit(1)
 import os, sys
 from base64 import b64encode
