@@ -7,6 +7,7 @@ except:
 	exit(1)
 try:
 	from Crypto import Random
+	from Crypto.Util.py3compat import bchr
 	from Crypto.Cipher import AES
 except:
 	print("install pycrypto: \"pip3 install pycrypto\"")
@@ -14,6 +15,19 @@ except:
 import os, sys
 from base64 import b64encode
 from getpass import getpass
+import codecs
+
+def pad(data_to_pad, block_size, style='pkcs7'):
+    padding_len = block_size-len(data_to_pad)%block_size
+    if style == 'pkcs7':
+        padding = bchr(padding_len)*padding_len
+    elif style == 'x923':
+        padding = bchr(0)*(padding_len-1) + bchr(padding_len)
+    elif style == 'iso7816':
+        padding = bchr(128) + bchr(0)*(padding_len-1)
+    else:
+        raise ValueError("Unknown padding style")
+    return data_to_pad + padding
 
 def main():
 	# sanitize input
@@ -42,14 +56,8 @@ def main():
 	key = PBKDF2(passphrase=passphrase,salt=salt,iterations=100).read(32)
 
 	cipher = AES.new(key, AES.MODE_CBC, IV=iv)
-	padded = data.decode("utf-8", "replace")
-	# workaround for padding issue https://github.com/dlitz/pycrypto/issues/277
-	for i in range(16):
-		try:
-			encrypted = cipher.encrypt(padded.encode("utf8"))
-			break
-		except ValueError:
-			padded += chr(0)
+	padded = pad(data, 16)
+	encrypted = cipher.encrypt(padded)
 
 	projectFolder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 	with open(os.path.join(projectFolder, "decryptTemplate.html")) as f:
@@ -61,7 +69,7 @@ def main():
 
 	filename, extension = os.path.splitext(inputfile)
 	outputfile = filename + "-protected" + extension
-	with open(outputfile, 'w') as f:
+	with codecs.open(outputfile, 'w','utf-8-sig') as f:
 		f.write(encryptedDocument)
 	print("File saved to %s"%outputfile)
 
