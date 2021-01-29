@@ -1,0 +1,2 @@
+pycryptodome==3.9.9
+pbkdf2==1.3
