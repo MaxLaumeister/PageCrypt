@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="canonical" href="https://www.maxlaumeister.com/pagecrypt/" />
+    <title>PageCrypt - Password Protect HTML</title>
+    <meta name="description" content="This tool lets you securely password-protect an HTML file without using .htaccess. It uses strong encryption, so the password-protection cannot be bypassed. Choose an HTML file and a password, and your page will be password-protected!">
+    <script>
+      // If there is no trailing slash after the path in the url, add it
+      // Workaround for Netlify trailing-slash rewrite issue
+      // https://community.netlify.com/t/bug-in-non-trailing-slash-rewrite/452/23
+      if (!window.location.pathname.endsWith('/') && !window.location.pathname.split("/").pop().includes(".")) {
+          var url = window.location.protocol + '//' +
+                  window.location.host +
+                  window.location.pathname + '/' +
+                  window.location.search;
+          window.history.replaceState(null, document.title, url);
+      }
+    </script>
+    <style>
+        html, body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.4;
+        }
+        h1 {
+            display: inline-block;
+        }
+        .githubLink {
+            display: inline-block;
+            padding: 6px 15px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            border: 1px solid #bbb;
+            margin-right: 10px;
+            background-image:linear-gradient(180deg, #fafbfc, #eff3f6 90%);
+        }
+        .githubLink:hover {
+            border: 1px solid #999;
+            background-image:  linear-gradient(180deg, #f0f3f6, #e6ebf1 90%);
+        }
+        h1, .githubLink {
+            vertical-align: middle;
+        }
+        .linkBack {
+            margin: 1em 0;
+        }
+        #pageContainer {
+            margin: 0 auto;
+            padding: 10px;
+            padding-top: 0;
+            max-width: 1050px;
+        }
+        #mainContainer {
+            padding: 0 25px 25px 25px;
+            border: solid #CCC 1px;
+        }
+        #sectionTop {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        #projDescription {
+            max-width: 700px;
+        }
+        .steps {
+            color: green;
+        }
+        #passMismatch {
+            display: none;
+            color: red;
+        }
+        .demoButton {
+          display: inline-block;
+          font: bold 20px Arial;
+          text-decoration: none;
+          background-color: #EEEEEE;
+          color: #333333;
+          padding: 2px 6px 2px 6px;
+          border-top: 1px solid #CCCCCC;
+          border-right: 1px solid #333333;
+          border-bottom: 1px solid #333333;
+          border-left: 1px solid #CCCCCC;
+        }
+        #doneProtecting {
+            display: none;
+            color: blue;
+            font-weight: bold;
+        }
+        #disclaimer {
+            color: gray;
+            font-size: 0.75em;
+            margin-top: 30px;
+        }
+        .githubLogo {
+            position: relative;
+            height: 25px;
+            vertical-align: middle;
+        }
+        .githubLogo:hover {
+            opacity: 1;
+        }
+        .suggested {
+            max-width: 260px;
+        }
+        @media (min-width: 700px) {
+            #pageContainer {
+                padding: 50px;
+                padding-top: 0;
+            }
+        }
+    </style>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('set', 'forceSSL', true);
+      ga('create', 'UA-24440376-11', 'auto');
+      ga('send', 'pageview');
+    </script>
+  </head>
+  <body>
+    <div id="pageContainer">
+        <div class="linkBack">
+            <a class="linkBack" href="https://www.maxlaumeister.com/">&lt;- home</a>
+        </div>
+        <div id="mainContainer">
+            <div id="sectionTop">
+                <div id="projDescription">
+                    <a class="githubLink" href="https://github.com/MaxLaumeister/pagecrypt"><img class="githubLogo" src="github.svg" alt="GitHub Logo"></a>
+                    <h1>PageCrypt - Password Protect HTML</h1>
+                    <p>This tool lets you securely password-protect an HTML file. Unlike other password-protection tools, this tool:</p>
+                    <ol>
+                        <li>Has no server-side components (this tool and its password-protected pages run entirely in javascript).</li>
+                        <li>Uses strong encryption, so the password-protection cannot be bypassed.</li>
+                    </ol>
+                    <p>All you need to do is choose an HTML file and a password, and your page will be password-protected.</p>
+                    <p><a href="demopage/" class="demoButton">Live Demo</a>&nbsp;&nbsp;(pssst... the live demo password is "hunter2")</p>
+                </div>
+                <div id="widgetContainer">
+                    <h2>Instructions</h2>
+                    <p class="steps">Step 1. Choose HTML file</p><p><input type="file" id="fileselect" name="file" disabled/></p>
+                    <p><span class="steps">Step 2. Choose password</span>
+                    <div style="display: table;">
+                        <div style="display: table-row;">
+                            <div style="display: table-cell;">Password:</div><div style="display: table-cell;"><input id="pass" type="password" name="pass" disabled></div>
+                        </div>
+                        <div style="display: table-row;">
+                            <div style="display: table-cell;">Confirm:</div><div style="display: table-cell;"><input id="passconf" type="password" name="passconf" disabled></div>
+                        </div>
+                    </div>
+                    <p id="passMismatch">Passwords don't match, try again.</p>
+                    <p class="steps">Step 3. Protect!</p><p><button id="submitFile" type="button" disabled>Submit</button></p>
+                    <p id="doneProtecting">Done! Check your downloads!</p>
+                    <p class="steps">Step 4. Tip me?</p><p><a href="https://www.maxlaumeister.com/tip/" class="demoButton">Donate!</a></p>
+                    <p class="suggested">Suggested donation is <strong>$5</strong> for personal use, or <strong>$10-20</strong> for businesses. Honor system!</p>
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+            <hr>
+            <div id="faq">
+                <h2>FAQ</h2>
+                <h3>How can this be secure if it's client-side? Can't people just bypass the password?</h3>
+                <p>The HTML gets encrypted using the password, so it is unreadable without the password. An attacker could extract the encrypted document, but it would be an unusable mess until they decrypt it, which can only be done with the original password.</p>
+                <h3>How do I know you're not keeping track of passwords I enter into this tool?</h3>
+                <p>View the source code for this tool (in your browser and/or <a href="https://github.com/MaxLaumeister/pagecrypt">on GitHub</a>) and you can see for yourself that the password never leaves your computer!</p>
+                <h3>Why would I want to use this instead of a .htaccess user/password prompt?</h3>
+                <p>Standard user/password prompts require you have some sort of privileged access to the server. With Apache for instance, you need to be able to add a .htaccess file to the directory you want to protect. Since this tool produces a standard HTML file, you can host it literally anywhere, even places that don't give you access to the server configuration.</p>
+                <p>This means you can use this tool to password-protect files without using .htaccess!</p>
+                <h3>Does this encrypt all the CSS/Javascript/Images or only the HTML itself?</h3>
+                <p>This tool only encrypts the HTML document itself. If you inline your CSS/JS, or if you <a href="http://www.abeautifulsite.net/convert-an-image-to-a-data-uri-with-your-browser/" target="_blank">convert your images to data uris</a>, then they will be encrypted too. Otherwise they will just be linked. Since the HTML itself is encrypted though, a visitor without the password will not be able see the URLs of any of the linked resources.</p>
+                <h3>What sort of crypto do you use?</h3>
+                <p>Certainly not my own! This tool uses the <a href="https://code.google.com/p/crypto-js/">CryptoJS library</a> for its encryption. First, an encryption key is derived from the password using PBKDF2 and a random salt with 100 rounds. Then the HTML is encrypted using AES256.</p>
+                <h3>Is there a way to automate this or use it as a software library?</h3>
+                <p>See <a href="https://github.com/Greenheart/pagecrypt">Samuel Plumppu's rewrite of PageCrypt</a>, which includes native Web Crypto support, CLI and NPM automation, and NodeJS API support.</p>
+                <p>In addition, thanks to <a href="https://zoltan.xyz/">Zoltán Gálli</a> for <a href="https://github.com/MaxLaumeister/pagecrypt/tree/master/python">this tool's Python CLI</a>, and thanks to <a href="https://nialfrancis.tech/">Nial Francis</a> for <a href="https://github.com/MaxLaumeister/pagecrypt/tree/master/PowerShell">this tool's PowerShell CLI</a>. <a href="https://github.com/MaxLaumeister/pagecrypt/tree/master/CONTRIBUTING.md">Contributions welcome!</a></p>
+                
+            </div>
+            <hr>
+            <div id="moreInfo">
+                <h2>More Info</h2>
+                <p>Project by <a href="https://www.maxlaumeister.com/">Maximillian Laumeister</a>. The source code and license are available <a href="https://github.com/MaxLaumeister/pagecrypt">on GitHub</a>.
+            </div>
+        </div>
+        <div id="disclaimer">
+            <p>DISCLAIMER</p>
+            <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+        </div>
+    </div>
+    
+    <script src="js/aes.js"></script>
+    <script src="js/pbkdf2.js"></script>
+    <script src="js/FileSaver.js"></script>
+    <script>
+        var fileSelect = document.getElementById('fileselect');
+        var submitFile = document.getElementById('submitFile');
+        var passEl = document.getElementById('pass');
+        var passConfEl = document.getElementById('passconf');
+        var passMismatch = document.getElementById('passMismatch');
+        var doneProtecting = document.getElementById('doneProtecting');
+        
+        var templateHTML;
+        
+        function doSubmit(evt) {
+            if (!passwordsMatch()) {
+                passMismatch.style.display = "block";
+                return;
+            }
+            
+            var file = fileSelect.files[0];
+            var reader = new FileReader();
+            reader.onload = function(data) {
+                var fileConts = data.target.result;
+                
+                var encryptedFile = encryptFile(fileConts, passEl.value);
+                
+                var salt = CryptoJS.enc.Base64.stringify(encryptedFile.salt);
+                var iv = CryptoJS.enc.Base64.stringify(encryptedFile.iv);
+                var cipherText = CryptoJS.enc.Base64.stringify(encryptedFile.data.ciphertext);
+                var encryptedJSON = JSON.stringify({salt: salt, iv: iv, data: cipherText});
+                
+                // Wrap template around encrypted data
+                
+                var encryptedDocument = templateHTML.replace("/*{{ENCRYPTED_PAYLOAD}}*/\"\"", encryptedJSON);
+                var fileBlob = new Blob([encryptedDocument], {type: "text/plain;charset=utf-8"});
+                
+                // Create filename
+                var origPath = document.getElementById('fileselect').value;
+                var pathSplit = origPath.split("\\");
+                var origName = pathSplit[pathSplit.length - 1];
+                var origNameSplit = origName.split(".");
+                origNameSplit[origNameSplit.length - 2] += "-protected";
+                var finalName = origNameSplit.join(".");
+                
+                saveAs(fileBlob, finalName);
+                doneProtecting.style.display = "block";
+            };
+            reader.readAsText(file);
+        }
+        
+        submitFile.onclick = doSubmit;
+        
+        function encryptFile(contents, password) {
+            var salt = CryptoJS.lib.WordArray.random(256/8);
+            var iv = CryptoJS.lib.WordArray.random(128/8);
+            var key = CryptoJS.PBKDF2(password, salt, { keySize: 256/32, iterations: 100 });
+            var encrypted = CryptoJS.AES.encrypt(contents, key, {iv: iv});
+            return {salt: salt, iv: iv, data: encrypted};
+        }
+        
+        // Load template
+        
+        var xmlhttp = new XMLHttpRequest();
+                
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+               if(xmlhttp.status == 200){
+                   templateHTML = xmlhttp.responseText;
+                   fileSelect.disabled = false;
+               }
+               else {
+                   console.log("Template not found.");
+               }
+            }
+        }
+
+        xmlhttp.open("GET", "decryptTemplate.html", true);
+        xmlhttp.send();
+        
+        // Enable elements as they are filled out
+        
+        fileSelect.onchange = function () {
+            passEl.disabled = false;
+            passConfEl.disabled = false;
+            submitFile.disabled = false;
+            doneProtecting.style.display = "none";
+        }
+        
+        function passwordsMatch() {
+            if (passEl.value !== "" && passEl.value === passConfEl.value) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
+        passEl.onkeyup = passConfEl.onkeyup = function () {
+            passMismatch.style.display = "none";
+        }
+        
+        if (window.location.protocol === "file:") alert("Please load this tool using a web server - it does not work when loaded directly from the index.html file. Thanks!");
+    </script>
+  </body>
+</html>
