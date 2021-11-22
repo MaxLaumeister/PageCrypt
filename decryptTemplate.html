@@ -13,7 +13,6 @@
             font-family: Arial, Helvetica, sans-serif;
         }
         #dialogText {
-            padding: 10px 30px;
             color: white;
             background-color: #333333;
         }
@@ -45,6 +44,9 @@
             background-color: #FFFFFF;
             overflow: hidden;
             text-align: left;
+        }
+        #mainDialog > * {
+            padding: 10px 30px;
         }
         #passArea {
             padding: 20px 30px;
@@ -83,6 +85,7 @@
             background-color: #E7E7E7;
             border: solid gray 1px;
             float: right;
+            cursor: pointer;
         }
         #contentFrame {
             position: absolute;
@@ -104,6 +107,10 @@
         #attribution, #attribution a {
             color: #999;
         }
+        .error {
+            display: none;
+            color: red;
+        }
     </style>
   </head>
   <body>
@@ -117,13 +124,24 @@
                     <input id="pass" type="password" name="pass" autofocus>
                     <div>
                         <span id="messageWrapper">
-                            <span id="invalidPass" class="notifyText">Sorry, please try again.</span>
+                            <span id="invalidPass" class="error">Sorry, please try again.</span>
+                            <span id="trycatcherror" class="error">Sorry, something went wrong.</span>
                             <span id="success" class="notifyText">Success!</span>
                             &nbsp;
                         </span>
                         <button id="submitPass" type="button">Submit</button>
                         <div style="clear: both;"></div>
                     </div>
+                </div>
+                <div id="securecontext" class="error">
+                    <p>
+                        Sorry, but password protection only works over a secure connection. Please load this page via HTTPS.
+                    </p>
+                </div>
+                <div id="nocrypto" class="error">
+                    <p>
+                        Your web browser appears to be outdated. Please visit this page using a modern browser.
+                    </p>
                 </div>
             </div>
         </div>
@@ -132,6 +150,38 @@
         Protected by <a href="https://www.maxlaumeister.com/pagecrypt/">PageCrypt</a>
     </div>
     <script>
+    (function() {
+
+        var pl = /*{{ENCRYPTED_PAYLOAD}}*/"";
+        
+        var submitPass = document.getElementById('submitPass');
+        var passEl = document.getElementById('pass');
+        var invalidPassEl = document.getElementById('invalidPass');
+        var trycatcherror = document.getElementById('trycatcherror');
+        var successEl = document.getElementById('success');
+        var contentFrame = document.getElementById('contentFrame');
+        
+        // Sanity checks
+
+        if (pl === "") {
+            submitPass.disabled = true;
+            passEl.disabled = true;
+            alert("This page is meant to be used with the encryption tool. It doesn't work standalone.");
+            return;
+        }
+
+        if (!isSecureContext) {
+            document.querySelector("#passArea").style.display = "none";
+            document.querySelector("#securecontext").style.display = "block";
+            return;
+        }
+
+        if (!crypto.subtle) {
+            document.querySelector("#passArea").style.display = "none";
+            document.querySelector("#nocrypto").style.display = "block";
+            return;
+        }
+        
         function str2ab(str) {
             var ustr = atob(str);
             var buf = new ArrayBuffer(ustr.length);
@@ -140,20 +190,6 @@
                 bufView[i] = ustr.charCodeAt(i);
             }
             return bufView;
-        }
-
-        var pl = /*{{ENCRYPTED_PAYLOAD}}*/"";
-        
-        var submitPass = document.getElementById('submitPass');
-        var passEl = document.getElementById('pass');
-        var invalidPassEl = document.getElementById('invalidPass');
-        var successEl = document.getElementById('success');
-        var contentFrame = document.getElementById('contentFrame');
-        
-        if (pl === "") {
-            submitPass.disabled = true;
-            passEl.disabled = true;
-            alert("This page is meant to be used with the encryption tool. It doesn't work standalone.");
         }
 
         async function deriveKey(salt, password) {
@@ -166,7 +202,7 @@
                 ['deriveKey'],
             )
             return await crypto.subtle.deriveKey(
-                { name: 'PBKDF2', salt, iterations: 2e6, hash: 'SHA-256' },
+                { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
                 baseKey,
                 { name: 'AES-GCM', length: 256 },
                 true,
@@ -175,15 +211,26 @@
         }
         
         async function doSubmit(evt) {
+            submitPass.disabled = true;
+            passEl.disabled = true;
+
+            let iv, ciphertext, key;
+            
             try {
                 var unencodedPl = str2ab(pl);
 
                 const salt = unencodedPl.slice(0, 32)
-                const iv = unencodedPl.slice(32, 32 + 16)
-                const ciphertext = unencodedPl.slice(32 + 16)
+                iv = unencodedPl.slice(32, 32 + 16)
+                ciphertext = unencodedPl.slice(32 + 16)
 
-                const key = await deriveKey(salt, passEl.value);
+                key = await deriveKey(salt, passEl.value);
+            } catch (e) {
+                trycatcherror.style.display = "inline";
+                console.error(e);
+                return;
+            }
 
+            try {
                 const decryptedArray = new Uint8Array(
                     await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext)
                 );
@@ -198,15 +245,16 @@
                 contentFrame.srcdoc = decrypted;
                 
                 successEl.style.display = "inline";
-                passEl.disabled = true;
-                submitPass.disabled = true;
                 setTimeout(function() {
                     dialogWrap.style.display = "none";
                 }, 1000);
             } catch (e) {
                 invalidPassEl.style.display = "inline";
                 passEl.value = "";
+                submitPass.disabled = false;
+                passEl.disabled = false;
                 console.error(e);
+                return;
             }
         }
         
@@ -221,16 +269,7 @@
               return false;
             }
         }
-        
-        function decryptFile(contents, password, salt, iv) {
-            var _cp = CryptoJS.lib.CipherParams.create({
-                ciphertext: contents
-            });
-            var key = CryptoJS.PBKDF2(password, salt, { keySize: 256/32, iterations: 100 });
-            var decrypted = CryptoJS.AES.decrypt(_cp, key, {iv: iv});
-            
-            return decrypted.toString(CryptoJS.enc.Utf8);
-        }
+    })();
     </script>
   </body>
 </html>
