@@ -1,4 +1,4 @@
-#' Encrypt and HTML Page
+#' Encrypt an HTML Page
 #' @description This is copy/pasta from the PageCrypt project by Max Laumeister translated for use as an R function. Makes use of the V8 package to create a javascript environment in R.
 #' @param file a character string. path/to/html.file
 #' @param password a character string. Password that unlocks file contents

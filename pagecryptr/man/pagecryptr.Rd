@@ -2,7 +2,7 @@
 % Please edit documentation in R/pagecryptr.R
 \name{pagecryptr}
 \alias{pagecryptr}
-\title{Encrypt and HTML Page}
+\title{Encrypt an HTML Page}
 \usage{
 pagecryptr(file, password, out_file = NULL)
 }
@@ -22,7 +22,7 @@ This is copy/pasta from the PageCrypt project by Max Laumeister translated for u
 \examples{
 if(interactive()){
  file <- system.file("example.html", package = "pagecryptr")
- pagecryptr(file, "password")
+ pagecryptr(file, "password", out_file = "~/Desktop/encrypted-file.html")
 }
 
 }
