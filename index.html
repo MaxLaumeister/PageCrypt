@@ -242,7 +242,12 @@
         }
 
         function ab2str(buf) {
-            return btoa(String.fromCharCode.apply(null, new Uint16Array(buf)));
+            const arrayBuf = new Uint16Array(buf);
+            let out = "";
+            for (let i = 0; i < arrayBuf.length; i++) {
+                out += String.fromCharCode(arrayBuf[i]);
+            }
+            return btoa(out);
         }
         
         var fileSelect = document.getElementById('fileselect');
