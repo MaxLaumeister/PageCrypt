@@ -60,7 +60,7 @@ def main():
 	encrypted = cipher.encrypt(padded)
 
 	projectFolder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-	with open(os.path.join(projectFolder, "decryptTemplate.html")) as f:
+	with open(os.path.join(projectFolder, "decryptTemplate-legacy.html")) as f:
 		templateHTML = f.read()
 
 	encryptedJSON = "{\"salt\":\"%s\",\"iv\":\"%s\",\"data\":\"%s\"}"%(

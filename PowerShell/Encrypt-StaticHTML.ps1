@@ -53,7 +53,7 @@ function GenerateKey {
 
 #### MAIN
 
-if ($Template -eq '') { $Template = Join-Path $PSScriptRoot 'decryptTemplate.html' }
+if ($Template -eq '') { $Template = Join-Path $PSScriptRoot 'decryptTemplate-legacy.html' }
 if ($Password.Length -lt 8) { Write-Warning 'Password is very poor quality' }
 
 if ($File) {
