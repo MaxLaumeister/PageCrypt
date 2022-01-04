@@ -1,14 +1,11 @@
 #!/usr/bin/python3
 
 try:
-	from pbkdf2 import PBKDF2
-except:
-	print("install pbkdf2: \"pip3 install pbkdf2\"")
-	exit(1)
-try:
 	from Crypto import Random
 	from Crypto.Util.py3compat import bchr
 	from Crypto.Cipher import AES
+	from Crypto.Protocol.KDF import PBKDF2
+	from Crypto.Hash import SHA256	
 except:
 	print("install pycrypto: \"pip3 install pycrypto\"")
 	exit(1)
@@ -17,17 +14,6 @@ from base64 import b64encode
 from getpass import getpass
 import codecs
 
-def pad(data_to_pad, block_size, style='pkcs7'):
-    padding_len = block_size-len(data_to_pad)%block_size
-    if style == 'pkcs7':
-        padding = bchr(padding_len)*padding_len
-    elif style == 'x923':
-        padding = bchr(0)*(padding_len-1) + bchr(padding_len)
-    elif style == 'iso7816':
-        padding = bchr(128) + bchr(0)*(padding_len-1)
-    else:
-        raise ValueError("Unknown padding style")
-    return data_to_pad + padding
 
 def main():
 	# sanitize input
@@ -52,20 +38,25 @@ def main():
 			print("Passwords don\'t match, try again.")
 
 	salt = Random.new().read(32)
+	key = PBKDF2(
+		passphrase.encode('utf-8'), 
+		salt, 
+		count=100000,
+		dkLen=32, 
+		hmac_hash_module=SHA256
+	)
 	iv = Random.new().read(16)
-	key = PBKDF2(passphrase=passphrase,salt=salt,iterations=100).read(32)
 
-	cipher = AES.new(key, AES.MODE_CBC, IV=iv)
-	padded = pad(data, 16)
-	encrypted = cipher.encrypt(padded)
+	cipher = AES.new(key, AES.MODE_GCM, nonce=iv)
+	encrypted, tag = cipher.encrypt_and_digest(data)
 
 	projectFolder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 	with open(os.path.join(projectFolder, "decryptTemplate-legacy.html")) as f:
 		templateHTML = f.read()
 
-	encryptedJSON = "{\"salt\":\"%s\",\"iv\":\"%s\",\"data\":\"%s\"}"%(
-		b64encode(salt).decode("utf-8"), b64encode(iv).decode("utf-8"), b64encode(encrypted).decode("utf-8"))
-	encryptedDocument = templateHTML.replace("/*{{ENCRYPTED_PAYLOAD}}*/\"\"", encryptedJSON)
+
+	encryptedPl = f'"{b64encode(salt+iv+encrypted+tag).decode("utf-8")}"'
+	encryptedDocument = templateHTML.replace("/*{{ENCRYPTED_PAYLOAD}}*/\"\"", encryptedPl)
 
 	filename, extension = os.path.splitext(inputfile)
 	outputfile = filename + "-protected" + extension
