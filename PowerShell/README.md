@@ -6,7 +6,7 @@ This implementation will also support a number of cypher changes (eg. key size a
 
 ### Usage ###
 
-Add this script and the `decryptTemplate.html` template into the same directory.
+Add this script and the `decryptTemplate-legacy.html` template into the same directory.
 
 To encrypt a string of text:  
 `.\Encrypt-StaticHTML.ps1 -Text '--text to encrypt--' -Password '--encryption password--'`

@@ -51,7 +51,7 @@ def main():
 	encrypted, tag = cipher.encrypt_and_digest(data)
 
 	projectFolder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-	with open(os.path.join(projectFolder, "decryptTemplate-legacy.html")) as f:
+	with open(os.path.join(projectFolder, "decryptTemplate.html")) as f:
 		templateHTML = f.read()
 
 
