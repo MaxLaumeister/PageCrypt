@@ -57,7 +57,7 @@ if ($Template -eq '') { $Template = Join-Path $PSScriptRoot 'decryptTemplate-leg
 if ($Password.Length -lt 8) { Write-Warning 'Password is very poor quality' }
 
 if ($File) {
-	$data = Get-Content -Raw $File
+	$data = Get-Content -Raw -Encoding UTF8 $File
 	if (!$OutFile) { $OutFile = $File + '.enc.html' }
 } elseif ($Text) {
 	$data = $Text
