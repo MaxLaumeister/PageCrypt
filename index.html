@@ -6,18 +6,6 @@
     <link rel="canonical" href="https://pagecrypt.maxlaumeister.com/" />
     <title>PageCrypt - Password Protect HTML</title>
     <meta name="description" content="This tool lets you securely password-protect an HTML file without using .htaccess. It uses strong encryption, so the password-protection cannot be bypassed. Choose an HTML file and a password, and your page will be password-protected!">
-    <script>
-      // If there is no trailing slash after the path in the url, add it
-      // Workaround for Netlify trailing-slash rewrite issue
-      // https://community.netlify.com/t/bug-in-non-trailing-slash-rewrite/452/23
-      if (!window.location.pathname.endsWith('/') && !window.location.pathname.split("/").pop().includes(".")) {
-          var url = window.location.protocol + '//' +
-                  window.location.host +
-                  window.location.pathname + '/' +
-                  window.location.search;
-          window.history.replaceState(null, document.title, url);
-      }
-    </script>
     <style>
         html, body {
             margin: 0;
@@ -176,8 +164,10 @@
                 <h3>Why would I want to use this instead of a .htaccess user/password prompt?</h3>
                 <p>Standard user/password prompts require you have some sort of privileged access to the server. With Apache for instance, you need to be able to add a .htaccess file to the directory you want to protect. Since this tool produces a standard HTML file, you can host it literally anywhere, even places that don't give you access to the server configuration.</p>
                 <p>This means you can use this tool to password-protect files without using .htaccess!</p>
-                <h3>Does this encrypt all the CSS/Javascript/Images or only the HTML itself?</h3>
+                <h3>Does PageCrypt encrypt all the CSS/Javascript/Images or only the HTML itself?</h3>
                 <p>This tool only encrypts the HTML document itself. If you inline your CSS/JS, or if you <a href="http://www.abeautifulsite.net/convert-an-image-to-a-data-uri-with-your-browser/" target="_blank">convert your images to data uris</a>, then they will be encrypted too. Otherwise they will just be linked. Since the HTML itself is encrypted though, a visitor without the password will not be able see the URLs of any of the linked resources.</p>
+                <h3>Can PageCrypt protect .pdf, .zip, or any other types of files?</h3>
+                <p>PageCrypt is designed specifically to encrypt HTML. To encrypt other file types, I recommend <a href="https://michaeldnahas.com/EasyEncryptionEverywhere.html">Easy Encryption Everywhere</a> by Michael D. Nahas.</p>
                 <h3>What sort of crypto do you use?</h3>
                 <p>This tool uses the <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto">SubtleCrypto</a> JavaScript API for its encryption. First, an encryption key is derived from the password using PBKDF2 and a random salt with 100,000 rounds. Then the HTML is encrypted using AES256.</p>
                 <h3>Is there a way to automate this or use it as a software library?</h3>
